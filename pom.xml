@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.wand</groupId>
+        <artifactId>HistoryX</artifactId>
+        <version>1.0.6</version>
+    </parent>
+
+    <groupId>dev.wand.historyx</groupId>
+    <artifactId>api</artifactId>
+    <version>
+        1.0.0
+    </version>
+
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <finalName>
+            HistoryX-API-${project.version}
+        </finalName>
+    </build>
+</project>
