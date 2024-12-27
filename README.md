@@ -4,6 +4,6 @@
 2. [How to use](https://github.com/willrees23/historyx-api#how-to-use)
 
 ## Installation
-HistoryX's API is distributed through GitHub packages.
+HistoryX's API is distributed through GitHub packages. You can see all packages on [this page](https://github.com/willrees23/historyx-api/packages/).
 
 ## How to use
