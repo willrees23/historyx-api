@@ -1,7 +1,9 @@
 # HistoryX
 ## Contents
-1. Installation
-2. How to use
+1. [Installation](https://github.com/willrees23/historyx-api/edit/main/README.md#installation)
+2. [How to use](https://github.com/willrees23/historyx-api/edit/main/README.md#how-to-use)
 
 ## Installation
 HistoryX's API is distributed through GitHub packages.
+
+## How to use
