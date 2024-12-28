@@ -264,11 +264,13 @@ public class CustomEntry {
      *     <li>LITEBANS: LiteBans plugin</li>
      *     <li>ADVANCEDBANS: AdvancedBans plugin</li>
      *     <li>LIBERTYBANS: LibertyBans plugin</li>
+     *     <li>CUSTOM: Custom implementation.</li>
      * </ul>
      */
     public enum EntrySource {
         LITEBANS,
         ADVANCEDBANS,
+        LIBERTYBANS,
         CUSTOM
     }
 }
