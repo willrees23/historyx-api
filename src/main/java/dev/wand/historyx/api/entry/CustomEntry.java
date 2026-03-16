@@ -95,41 +95,23 @@ public class CustomEntry {
      * Nullable. If it is null, this entry probably has not been removed.
      */
     @Nullable
-    private String removedByUUID;
+    private final String removedByUUID;
     /**
      * The display name of the executor who removed this entry.
      * Nullable. If it is null, this entry probably has not been removed.
      */
     @Nullable
-    private String removedByName;
+    private final String removedByName;
     /**
      * The reason for this punishment's removal. Arbitrary string.
      */
     @Nullable
-    private String removalReason;
+    private final String removalReason;
 
-    private boolean abExpired;
+    private final boolean abExpired;
 
     public CustomEntry(long id, String type, String uuid, String ip, String reason, String executorUUID, String executorName, String removedByUUID, String removedByName, String removalReason, long dateStart, long dateEnd, String serverScope, String serverOrigin, boolean silent, boolean ipban, boolean active, long duration, EntrySource source) {
-        this.id = id;
-        this.type = type;
-        this.uuid = uuid;
-        this.ip = ip;
-        this.reason = reason;
-        this.executorUUID = executorUUID;
-        this.executorName = executorName;
-        this.removedByUUID = removedByUUID;
-        this.removedByName = removedByName;
-        this.removalReason = removalReason;
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.serverScope = serverScope;
-        this.serverOrigin = serverOrigin;
-        this.silent = silent;
-        this.ipban = ipban;
-        this.active = active;
-        this.duration = duration;
-        this.source = source;
+        this(id, type, uuid, ip, reason, executorUUID, executorName, removedByUUID, removedByName, removalReason, dateStart, dateEnd, serverScope, serverOrigin, silent, ipban, active, duration, source, false);
     }
 
     public CustomEntry(long id, String type, String uuid, String ip, String reason, String executorUUID, String executorName, String removedByUUID, String removedByName, String removalReason, long dateStart, long dateEnd, String serverScope, String serverOrigin, boolean silent, boolean ipban, boolean active, long duration, EntrySource source, boolean abExpired) {
@@ -183,7 +165,7 @@ public class CustomEntry {
     /**
      * Checks whether this entry is actually active, not just relying on the "active" field.
      * Uses the current time to check against the entry's expiration date.
-     * ONLY APPLICABLE TO LITEBANS ENTRIES.
+     * Works correctly for all entry sources (LiteBans, AdvancedBan, LibertyBans).
      *
      * @return True if this entry is actually active, false otherwise.
      */
