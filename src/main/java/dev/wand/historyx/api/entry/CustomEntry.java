@@ -253,6 +253,7 @@ public class CustomEntry {
         LITEBANS,
         ADVANCEDBANS,
         LIBERTYBANS,
+        BANMANAGER,
         CUSTOM
     }
 }
