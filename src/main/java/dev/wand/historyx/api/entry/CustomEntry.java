@@ -241,6 +241,93 @@ public class CustomEntry {
     }
 
     /**
+     * Creates a new Builder with the required fields.
+     *
+     * @param id     The unique ID of this entry.
+     * @param type   The punishment type (e.g. "ban", "mute", "kick", "warning").
+     * @param source The source plugin of this entry.
+     * @return A new Builder instance.
+     * @since 2.0.0
+     */
+    public static Builder builder(long id, String type, EntrySource source) {
+        return new Builder(id, type, source);
+    }
+
+    /**
+     * Fluent builder for {@link CustomEntry}.
+     * <p>
+     * Required fields (id, type, source) are set via the constructor.
+     * All other fields have sensible defaults (null for strings, false for booleans).
+     * </p>
+     *
+     * @since 2.0.0
+     */
+    public static class Builder {
+        // Required
+        private final long id;
+        private final String type;
+        private final EntrySource source;
+
+        // Optional — strings default to null
+        private String uuid = null;
+        private String ip = null;
+        private String reason = null;
+        private String executorUUID = null;
+        private String executorName = null;
+        private String removedByUUID = null;
+        private String removedByName = null;
+        private String removalReason = null;
+        private String serverScope = null;
+        private String serverOrigin = null;
+
+        // Optional — longs
+        private long dateStart = 0;
+        private long dateEnd = -1;
+        private long duration = -1;
+
+        // Optional — booleans default to false
+        private boolean silent = false;
+        private boolean ipban = false;
+        private boolean active = false;
+        private boolean abExpired = false;
+
+        private Builder(long id, String type, EntrySource source) {
+            this.id = id;
+            this.type = type;
+            this.source = source;
+        }
+
+        public Builder uuid(String uuid) { this.uuid = uuid; return this; }
+        public Builder ip(String ip) { this.ip = ip; return this; }
+        public Builder reason(String reason) { this.reason = reason; return this; }
+        public Builder executorUUID(String executorUUID) { this.executorUUID = executorUUID; return this; }
+        public Builder executorName(String executorName) { this.executorName = executorName; return this; }
+        public Builder removedByUUID(String removedByUUID) { this.removedByUUID = removedByUUID; return this; }
+        public Builder removedByName(String removedByName) { this.removedByName = removedByName; return this; }
+        public Builder removalReason(String removalReason) { this.removalReason = removalReason; return this; }
+        public Builder serverScope(String serverScope) { this.serverScope = serverScope; return this; }
+        public Builder serverOrigin(String serverOrigin) { this.serverOrigin = serverOrigin; return this; }
+        public Builder dateStart(long dateStart) { this.dateStart = dateStart; return this; }
+        public Builder dateEnd(long dateEnd) { this.dateEnd = dateEnd; return this; }
+        public Builder duration(long duration) { this.duration = duration; return this; }
+        public Builder silent(boolean silent) { this.silent = silent; return this; }
+        public Builder ipban(boolean ipban) { this.ipban = ipban; return this; }
+        public Builder active(boolean active) { this.active = active; return this; }
+        public Builder abExpired(boolean abExpired) { this.abExpired = abExpired; return this; }
+
+        /**
+         * Builds the {@link CustomEntry} instance.
+         *
+         * @return A new CustomEntry with the configured values.
+         */
+        public CustomEntry build() {
+            return new CustomEntry(id, type, uuid, ip, reason, executorUUID, executorName,
+                    removedByUUID, removedByName, removalReason, dateStart, dateEnd,
+                    serverScope, serverOrigin, silent, ipban, active, duration, source, abExpired);
+        }
+    }
+
+    /**
      * Represents the source of a punishment entry.
      * <ul>
      *     <li>LITEBANS: LiteBans plugin</li>
