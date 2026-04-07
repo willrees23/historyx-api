@@ -5,8 +5,9 @@ import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,12 +22,15 @@ import java.util.concurrent.TimeUnit;
 @ToString
 public class CustomEntry {
 
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss (MMM dd)");
+
     /**
      * The ID of this entry.
      */
     private final long id;
 
-    private final String type;
+    private final PunishmentType type;
 
     /**
      * The UUID of the player affected by this entry.
@@ -108,13 +112,7 @@ public class CustomEntry {
     @Nullable
     private final String removalReason;
 
-    private final boolean abExpired;
-
-    public CustomEntry(long id, String type, String uuid, String ip, String reason, String executorUUID, String executorName, String removedByUUID, String removedByName, String removalReason, long dateStart, long dateEnd, String serverScope, String serverOrigin, boolean silent, boolean ipban, boolean active, long duration, EntrySource source) {
-        this(id, type, uuid, ip, reason, executorUUID, executorName, removedByUUID, removedByName, removalReason, dateStart, dateEnd, serverScope, serverOrigin, silent, ipban, active, duration, source, false);
-    }
-
-    public CustomEntry(long id, String type, String uuid, String ip, String reason, String executorUUID, String executorName, String removedByUUID, String removedByName, String removalReason, long dateStart, long dateEnd, String serverScope, String serverOrigin, boolean silent, boolean ipban, boolean active, long duration, EntrySource source, boolean abExpired) {
+    public CustomEntry(long id, PunishmentType type, String uuid, String ip, String reason, String executorUUID, String executorName, String removedByUUID, String removedByName, String removalReason, long dateStart, long dateEnd, String serverScope, String serverOrigin, boolean silent, boolean ipban, boolean active, long duration, EntrySource source) {
         this.id = id;
         this.type = type;
         this.uuid = uuid;
@@ -134,23 +132,14 @@ public class CustomEntry {
         this.active = active;
         this.duration = duration;
         this.source = source;
-        this.abExpired = abExpired;
     }
 
     public boolean wasRemoved() {
-        // removedByName or removedByUUID is null == expired
-        // removedByUUId can also be a string "null" which also means expired
-        // if source is advancedbans, we can trust the active field
-
-        // TLDR; litebans is weird
-        if (source == EntrySource.ADVANCEDBANS) {
-            return !active && (!isAbExpired());
-        }
         return removedByName != null && removedByUUID != null && !removedByUUID.equalsIgnoreCase("null");
     }
 
     public String getDateEndFormatted() {
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss (MMM dd)").format(new Date(dateEnd));
+        return DATE_FORMATTER.format(Instant.ofEpochMilli(dateEnd).atZone(ZoneId.systemDefault()));
     }
 
     /**
@@ -159,7 +148,7 @@ public class CustomEntry {
      * @return A formatted version of the start date of this entry.
      */
     public String getDateStartFormatted() {
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss (MMM dd)").format(new Date(dateStart));
+        return DATE_FORMATTER.format(Instant.ofEpochMilli(dateStart).atZone(ZoneId.systemDefault()));
     }
 
     /**
@@ -244,12 +233,12 @@ public class CustomEntry {
      * Creates a new Builder with the required fields.
      *
      * @param id     The unique ID of this entry.
-     * @param type   The punishment type (e.g. "ban", "mute", "kick", "warning").
+     * @param type   The punishment type.
      * @param source The source plugin of this entry.
      * @return A new Builder instance.
      * @since 2.0.0
      */
-    public static Builder builder(long id, String type, EntrySource source) {
+    public static Builder builder(long id, PunishmentType type, EntrySource source) {
         return new Builder(id, type, source);
     }
 
@@ -265,7 +254,7 @@ public class CustomEntry {
     public static class Builder {
         // Required
         private final long id;
-        private final String type;
+        private final PunishmentType type;
         private final EntrySource source;
 
         // Optional — strings default to null
@@ -289,9 +278,8 @@ public class CustomEntry {
         private boolean silent = false;
         private boolean ipban = false;
         private boolean active = false;
-        private boolean abExpired = false;
 
-        private Builder(long id, String type, EntrySource source) {
+        private Builder(long id, PunishmentType type, EntrySource source) {
             this.id = id;
             this.type = type;
             this.source = source;
@@ -313,7 +301,6 @@ public class CustomEntry {
         public Builder silent(boolean silent) { this.silent = silent; return this; }
         public Builder ipban(boolean ipban) { this.ipban = ipban; return this; }
         public Builder active(boolean active) { this.active = active; return this; }
-        public Builder abExpired(boolean abExpired) { this.abExpired = abExpired; return this; }
 
         /**
          * Builds the {@link CustomEntry} instance.
@@ -323,7 +310,7 @@ public class CustomEntry {
         public CustomEntry build() {
             return new CustomEntry(id, type, uuid, ip, reason, executorUUID, executorName,
                     removedByUUID, removedByName, removalReason, dateStart, dateEnd,
-                    serverScope, serverOrigin, silent, ipban, active, duration, source, abExpired);
+                    serverScope, serverOrigin, silent, ipban, active, duration, source);
         }
     }
 

@@ -10,10 +10,10 @@ class CustomEntryBuilderTest {
     @Test
     @DisplayName("Builder with required fields only uses correct defaults")
     void requiredFieldsOnly() {
-        CustomEntry entry = CustomEntry.builder(1, "ban", CustomEntry.EntrySource.LITEBANS).build();
+        CustomEntry entry = CustomEntry.builder(1, PunishmentType.BAN, CustomEntry.EntrySource.LITEBANS).build();
 
         assertEquals(1, entry.getId());
-        assertEquals("ban", entry.getType());
+        assertEquals(PunishmentType.BAN, entry.getType());
         assertEquals(CustomEntry.EntrySource.LITEBANS, entry.getSource());
 
         // String defaults
@@ -37,13 +37,12 @@ class CustomEntryBuilderTest {
         assertFalse(entry.isSilent());
         assertFalse(entry.isIpban());
         assertFalse(entry.isActive());
-        assertFalse(entry.isAbExpired());
     }
 
     @Test
     @DisplayName("Builder with all fields set returns correct values")
     void allFieldsSet() {
-        CustomEntry entry = CustomEntry.builder(42, "mute", CustomEntry.EntrySource.BANMANAGER)
+        CustomEntry entry = CustomEntry.builder(42, PunishmentType.MUTE, CustomEntry.EntrySource.BANMANAGER)
                 .uuid("uuid-123")
                 .ip("192.168.1.%")
                 .reason("Spamming")
@@ -60,11 +59,10 @@ class CustomEntryBuilderTest {
                 .silent(true)
                 .ipban(true)
                 .active(true)
-                .abExpired(true)
                 .build();
 
         assertEquals(42, entry.getId());
-        assertEquals("mute", entry.getType());
+        assertEquals(PunishmentType.MUTE, entry.getType());
         assertEquals(CustomEntry.EntrySource.BANMANAGER, entry.getSource());
         assertEquals("uuid-123", entry.getUuid());
         assertEquals("192.168.1.%", entry.getIp());
@@ -82,13 +80,12 @@ class CustomEntryBuilderTest {
         assertTrue(entry.isSilent());
         assertTrue(entry.isIpban());
         assertTrue(entry.isActive());
-        assertTrue(entry.isAbExpired());
     }
 
     @Test
     @DisplayName("Builder produces independent instances on multiple builds")
     void independentInstances() {
-        CustomEntry.Builder builder = CustomEntry.builder(1, "ban", CustomEntry.EntrySource.LITEBANS)
+        CustomEntry.Builder builder = CustomEntry.builder(1, PunishmentType.BAN, CustomEntry.EntrySource.LITEBANS)
                 .reason("First");
         CustomEntry first = builder.build();
 
@@ -104,12 +101,12 @@ class CustomEntryBuilderTest {
     @DisplayName("Builder matches 19-param constructor output")
     void backwardsCompat_19param() {
         CustomEntry fromConstructor = new CustomEntry(
-                1, "ban", "uuid", "ip", "reason", "execUUID", "execName",
+                1, PunishmentType.BAN, "uuid", "ip", "reason", "execUUID", "execName",
                 "remUUID", "remName", "remReason", 100L, 200L,
                 "scope", "origin", true, true, true, 100L,
                 CustomEntry.EntrySource.LITEBANS);
 
-        CustomEntry fromBuilder = CustomEntry.builder(1, "ban", CustomEntry.EntrySource.LITEBANS)
+        CustomEntry fromBuilder = CustomEntry.builder(1, PunishmentType.BAN, CustomEntry.EntrySource.LITEBANS)
                 .uuid("uuid").ip("ip").reason("reason")
                 .executorUUID("execUUID").executorName("execName")
                 .removedByUUID("remUUID").removedByName("remName").removalReason("remReason")
@@ -137,28 +134,5 @@ class CustomEntryBuilderTest {
         assertEquals(fromConstructor.isActive(), fromBuilder.isActive());
         assertEquals(fromConstructor.getDuration(), fromBuilder.getDuration());
         assertEquals(fromConstructor.getSource(), fromBuilder.getSource());
-        assertEquals(fromConstructor.isAbExpired(), fromBuilder.isAbExpired());
-    }
-
-    @Test
-    @DisplayName("Builder matches 20-param constructor with abExpired=true")
-    void backwardsCompat_20param() {
-        CustomEntry fromConstructor = new CustomEntry(
-                1, "ban", "uuid", null, "reason", null, null,
-                null, null, null, 100L, -1L,
-                null, null, false, false, false, -1L,
-                CustomEntry.EntrySource.ADVANCEDBANS, true);
-
-        CustomEntry fromBuilder = CustomEntry.builder(1, "ban", CustomEntry.EntrySource.ADVANCEDBANS)
-                .uuid("uuid").reason("reason")
-                .dateStart(100L)
-                .abExpired(true)
-                .build();
-
-        assertEquals(fromConstructor.getId(), fromBuilder.getId());
-        assertEquals(fromConstructor.getSource(), fromBuilder.getSource());
-        assertEquals(fromConstructor.isAbExpired(), fromBuilder.isAbExpired());
-        assertNull(fromBuilder.getIp());
-        assertNull(fromBuilder.getExecutorUUID());
     }
 }
